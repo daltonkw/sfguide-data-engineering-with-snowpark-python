@@ -24,7 +24,7 @@ def get_snowpark_session() -> Session:
     # TODO: Look for a creds.json style file. This should be the way all snowpark
     # related tools work IMO
     # if using snowsql config, like snowcli does
-    elif os.path.exists(os.path.expanduser('~/.snowsql/config')):
+    elif os.path.exists(os.path.expanduser('~/.snowsql/altconfig')):
         snowpark_config = get_snowsql_config()
         SnowflakeConnection().connection = Session.builder.configs(snowpark_config).create()
     # otherwise configure from environment variables
@@ -50,14 +50,9 @@ def get_snowpark_session() -> Session:
 # since this will be called outside the snowcli app context.
 # TODO: It would be nice to get rid of this entirely and always use creds.json but
 # need to update snowcli to make that happen
-def get_snowsql_config(
-    connection_name: str = 'dev',
-    config_file_path: str = os.path.expanduser('~/.snowsql/config'),
-) -> dict:
+def get_snowsql_config(config_file_path: str = os.path.expanduser('~/.snowsql/altconfig')) -> dict:
     import configparser
-
     snowsql_to_snowpark_config_mapping = {
-        'account': 'account',
         'accountname': 'account',
         'username': 'user',
         'password': 'password',
@@ -68,8 +63,7 @@ def get_snowsql_config(
     }
     try:
         config = configparser.ConfigParser(inline_comment_prefixes="#")
-        connection_path = 'connections.' + connection_name
-
+        connection_path = 'connections'
         config.read(config_file_path)
         session_config = config[connection_path]
         # Convert snowsql connection variable names to snowcli ones
@@ -79,6 +73,4 @@ def get_snowsql_config(
         }
         return session_config_dict
     except Exception:
-        raise Exception(
-            "Error getting snowsql config details"
-        )
+        raise Exception("Error getting snowsql config details")
