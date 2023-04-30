@@ -1,4 +1,4 @@
-snowsql_config_path = "~/.snowsql/config"
+snowsql_config_path = "~/.snowsql/altconfig"
 snowsql_connection_name = "dev"
 
 [default]

@@ -63,7 +63,7 @@ def get_snowsql_config(config_file_path: str = os.path.expanduser('~/.snowsql/al
     }
     try:
         config = configparser.ConfigParser(inline_comment_prefixes="#")
-        connection_path = 'connections'
+        connection_path = 'connections.dev'
         config.read(config_file_path)
         session_config = config[connection_path]
         # Convert snowsql connection variable names to snowcli ones
